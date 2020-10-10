@@ -18,7 +18,7 @@ from torch.utils.data import DataLoader
 
 from lib.models import model_factory
 from configs import cfg_factory
-from lib.cityscapes_cv2 import get_data_loader
+# from lib.cityscapes_cv2 import get_data_loader
 from lib.coco_cv2 import get_data_loader
 from tools.evaluate import eval_model
 from lib.ohem_ce_loss import OhemCELoss
