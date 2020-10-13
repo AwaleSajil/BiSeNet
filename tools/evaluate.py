@@ -22,7 +22,7 @@ import torch.distributed as dist
 from lib.models import model_factory
 from configs import cfg_factory
 from lib.logger import setup_logger
-from lib.cityscapes_cv2 import get_data_loader
+from lib.coco_cv2 import get_data_loader
 
 
 
