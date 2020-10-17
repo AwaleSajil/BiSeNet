@@ -287,7 +287,7 @@ def train():
 
     logger.info('\nevaluating the final model')
     torch.cuda.empty_cache()
-    heads, mious = eval_model(net, 2, cfg.im_root, cfg.val_im_anns)
+    heads, mious = eval_model(net, 2, cfg.im_root, cfg.val_im_anns, cfg.cropsize)
     logger.info(tabulate([mious, ], headers=heads, tablefmt='orgtbl'))
     return
 
