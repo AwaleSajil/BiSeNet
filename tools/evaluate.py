@@ -186,8 +186,10 @@ class MscEvalCrop(object):
 @torch.no_grad()
 def eval_model(net, ims_per_gpu, im_root, im_anns):
     is_dist = dist.is_initialized()
+
     dl = get_data_loader(im_root, im_anns, ims_per_gpu, None,
-            None, mode='val', distributed=is_dist)
+            None, mode='val', distributed=False)
+            
     net.eval()
 
     heads, mious = [], []

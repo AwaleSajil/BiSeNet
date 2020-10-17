@@ -35,9 +35,10 @@ class AvgMeter(object):
         self.seq.append(val)
         self.global_seq.append(val)
 
-    def get(self):
+    def get(self, resetMeter = True):
         avg = sum(self.seq) / len(self.seq)
         global_avg = sum(self.global_seq) / len(self.global_seq)
-        self.seq = []
+        if resetMeter:
+            self.seq = []
         return avg, global_avg
 
