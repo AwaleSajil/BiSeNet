@@ -74,9 +74,14 @@ class TransformationTrain(object):
 
 class TransformationVal(object):
 
+    def __init__(self, cropsize):
+        self.trans_func = T.Compose([
+            T.ResizedCrop(cropsize),
+        ])
+
     def __call__(self, im_lb):
-        im, lb = im_lb['im'], im_lb['lb']
-        return dict(im=im, lb=lb)
+        im, lb = self.trans_func(im_lb)
+        return im_lb
 
 
 if __name__ == "__main__":
