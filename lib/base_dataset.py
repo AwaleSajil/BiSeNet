@@ -76,11 +76,11 @@ class TransformationVal(object):
 
     def __init__(self, cropsize):
         self.trans_func = T.Compose([
-            T.ResizedCrop(cropsize),
+            T.RandomResizedCrop((1,1), cropsize),
         ])
 
     def __call__(self, im_lb):
-        im, lb = self.trans_func(im_lb)
+        im_lb = self.trans_func(im_lb)
         return im_lb
 
 

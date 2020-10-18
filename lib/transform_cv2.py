@@ -10,34 +10,6 @@ import cv2
 import torch
 
 
-
-
-class ResizedCrop(object):
-    '''
-    size should be a tuple of (H, W)
-    '''
-    def __init__(self, size=(384, 384)):
-        self.size = size
-
-    def __call__(self, im_lb):
-        if self.size is None:
-            return im_lb
-
-        im, lb = im_lb['im'], im_lb['lb']
-        assert im.shape[:2] == lb.shape[:2]
-
-        crop_h, crop_w = self.size
-        im = cv2.resize(im, (crop_w, crop_h))
-        lb = cv2.resize(lb, (crop_w, crop_h), interpolation=cv2.INTER_NEAREST)
-
-        return dict(
-            im=im.copy(),
-            lb=lb.copy()
-        )
-
-
-
-
 class RandomResizedCrop(object):
     '''
     size should be a tuple of (H, W)
