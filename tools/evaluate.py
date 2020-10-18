@@ -69,6 +69,7 @@ class MscEvalV0(object):
                 label[keep] * n_classes + preds[keep],
                 minlength=n_classes ** 2
                 ).view(n_classes, n_classes)
+                
         if dist.is_initialized():
             dist.all_reduce(hist, dist.ReduceOp.SUM)
         ious = hist.diag() / (hist.sum(dim=0) + hist.sum(dim=1) - hist.diag())
