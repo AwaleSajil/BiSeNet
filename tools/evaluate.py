@@ -40,15 +40,6 @@ class MscEvalV0(object):
         else:
             diter = enumerate(tqdm(dl))
 
-        print("=====================================================")
-
-        images, label = next(iter(dl))
-        print("First image shapes:", images.shape, label.shape)
-        images, label = next(iter(dl))
-        print("second image shapes:", images.shape, label.shape)
-        images, label = next(iter(dl))
-        print("third image shapes:", images.shape, label.shape)
-
         for i, (imgs, label) in diter:
             N, _, H, W = label.shape
             label = label.squeeze(1).cuda()
