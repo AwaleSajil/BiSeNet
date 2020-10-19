@@ -156,7 +156,7 @@ def addScalars_loss_Tensorboard(global_it, loss_meter):
     running_avg_loss, _ = loss_meter.get(resetMeter=False)
     writter.add_scalar('Training Loss',running_avg_loss , global_it)
 
-def add addScalars_lr_Tensorboard(global_it, lr):
+def addScalars_lr_Tensorboard(global_it, lr):
     global writter
     writter.add_scalar('Learning Rate',lr , global_it)
 
@@ -248,7 +248,7 @@ def train():
 
             ## print training log message
             global_it = it + epoch*iteration_per_epoch
-            if (it + 1) % 100 == 0:
+            if (global_it + 1) % 100 == 0:
                 lr = lr_schdr.get_lr()
                 lr = sum(lr) / len(lr)
                 #write important scalars to tensorboard
