@@ -151,13 +151,20 @@ def addImage_Tensorboard(dl):
     writter.add_image('A batch of training image', img_grid)
     writter.close()
 
-def addScalars_Tensorboard(global_it, loss_meter, lr, running_avg_accuracy):
+def addScalars_loss_Tensorboard(global_it, loss_meter):
     global writter
-    #first write trainig loss
     running_avg_loss, _ = loss_meter.get(resetMeter=False)
     writter.add_scalar('Training Loss',running_avg_loss , global_it)
-    writter.add_scalar('Training Accuracy',running_avg_accuracy , global_it)
+
+def add addScalars_lr_Tensorboard(global_it, lr):
+    global writter
     writter.add_scalar('Learning Rate',lr , global_it)
+
+def addScalars_val_accuracy_Tensorboard(global_it, heads, mious):
+    global writter
+    for head, miou in zip(heads, mious):
+        writter.add_scalar(str(head) + " miou", miou, global_it)
+
 
 
 def train():
@@ -208,13 +215,11 @@ def train():
     #send the model structure to tensorboard
     addGraph_Tensorboard(net, dl)
 
-    #running_correct_prediction for training accuracy
-    running_correct_prediction = 0
     ## train loop
     for current_epoch in range(max_epoch):
         #on resumed training 'epoch' will be incremented from what was left else the sum is 0 anyways
         epoch = start_epoch + current_epoch
-
+        
         for it, (im, lb) in enumerate(dl):
             
             im = im.to(device)
@@ -228,9 +233,6 @@ def train():
             loss_aux = [crit(lgt, lb) for crit, lgt in zip(criteria_aux, logits_aux)]
             loss = loss_pre + sum(loss_aux)
 
-            # pred_ = logits.argmax(dim=1).squeeze().detach().cpu().numpy()
-            # label_ = lb.detach().cpu().numpy()
-            # running_correct_prediction += ((pred_ == label_).sum()).numpy()
             if has_apex:
                 with amp.scale_loss(loss, optim) as scaled_loss:
                     scaled_loss.backward()
@@ -250,9 +252,8 @@ def train():
                 lr = lr_schdr.get_lr()
                 lr = sum(lr) / len(lr)
                 #write important scalars to tensorboard
-                # addScalars_Tensorboard(global_it, loss_meter, lr, running_correct_prediction/100)
-                #reset running_correct_prediction
-                running_correct_prediction = 0
+                addScalars_loss_Tensorboard(global_it, loss_meter)
+                addScalars_lr_Tensorboard(global_it, lr)
                 print_log_msg(
                     global_it, cfg.max_iter, lr, time_meter, loss_meter,
                     loss_pre_meter, loss_aux_meters)
@@ -271,6 +272,14 @@ def train():
                 save_pth = osp.join(args.saveCheckpointDir, ckt_name)
                 logger.info('\nsaving intermidiate checkpoint to {}'.format(save_pth))
                 save_ckp(checkpoint, save_pth)
+            
+            #compute validation accuracy in terms of mious
+            logger.info('\nevaluating the model after ' + str(epoch+1) + ' epoches')
+            heads, mious = eval_model(net, 2, cfg.im_root, cfg.val_im_anns, cfg.cropsize)
+            #set back to training mode
+            addScalars_val_accuracy_Tensorboard(global_it, heads, mious)
+            net.train()
+
 
 
 

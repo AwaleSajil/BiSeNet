@@ -2,9 +2,9 @@
 cfg = dict(
     model_type='bisenetv1',
     num_aux_heads=2,
-    lr_start=1e-2,
-    weight_decay=5e-4,
-    warmup_iters=1000,
+    lr_start=3e-4,
+    weight_decay=5e-5,
+    warmup_iters=4000,
     max_iter=80000,
     im_root='./datasets/coco',
     train_im_anns='./datasets/coco/train.txt',
