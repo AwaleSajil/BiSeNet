@@ -9,7 +9,6 @@ import numpy as np
 import cv2
 import torch
 
-
 class RandomResizedCrop(object):
     '''
     size should be a tuple of (H, W)
