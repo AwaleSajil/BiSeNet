@@ -165,8 +165,6 @@ def addScalars_val_accuracy_Tensorboard(global_it, heads, mious):
     for head, miou in zip(heads, mious):
         writter.add_scalar(str(head) + " miou", miou, global_it)
 
-
-
 def train():
     logger = logging.getLogger()
 

@@ -58,6 +58,7 @@ class TransformationTrain(object):
 
     def __init__(self, scales, cropsize):
         self.trans_func = T.Compose([
+            T.RandomRotation(degrees = (-45, 45)),
             T.RandomResizedCrop(scales, cropsize),
             T.RandomHorizontalFlip(),
             T.ColorJitter(
