@@ -1,6 +1,11 @@
 #!/usr/bin/python
 # -*- encoding: utf-8 -*-
 
+
+#mean and std for /gdrive/My Drive/COCO_small_datasets/smallCoco_v3_full.zip dataset is 
+# Mean:  tensor([0.3507, 0.3343, 0.3084])
+# Std:  tensor([0.3043, 0.2962, 0.2929])
+
 import sys
 import os
 import os.path as osp
@@ -34,10 +39,16 @@ class Coco(BaseDataset):
         for el in labels_info:
             self.lb_map[el['id']] = el['trainId']
 
+        # self.to_tensor = T.ToTensor(
+        #     mean=(0.3257, 0.3690, 0.3223), # city, rgb
+        #     std=(0.2112, 0.2148, 0.2115),
+        # )
+
         self.to_tensor = T.ToTensor(
-            mean=(0.3257, 0.3690, 0.3223), # city, rgb
-            std=(0.2112, 0.2148, 0.2115),
+            mean=(0.3507, 0.3343, 0.3084), # coco-customdataset, rgb
+            std=(0.3043, 0.2962, 0.2929),
         )
+        
 
 
 def get_mean_std(loader):
@@ -97,11 +108,6 @@ def get_data_loader(datapth, annpath, ims_per_gpu, scales, cropsize, max_iter=No
             num_workers=4,
             pin_memory=True,
         )
-    
-    mean, std = get_mean_std(al)
-
-
-    sys.exit()
     return dl
 
 
