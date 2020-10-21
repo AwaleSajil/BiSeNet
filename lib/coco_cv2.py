@@ -1,6 +1,7 @@
 #!/usr/bin/python
 # -*- encoding: utf-8 -*-
 
+import sys
 import os
 import os.path as osp
 import json
@@ -38,6 +39,22 @@ class Coco(BaseDataset):
             std=(0.2112, 0.2148, 0.2115),
         )
 
+
+def get_mean_std(loader):
+    #var[x] = E[x**2] - E[x]**2
+    channels_sum, channels_squared_sum, num_batches = 0,0,0
+    for data, _ in loader:
+        print("Data Shape:", data.size())
+        channels_sum += torch.mean(data, dim = [0,2,3])
+        channels_squared_sum += torch.mean(data**2, dim=[0,2,3])
+        num_batches += 1
+    
+    mean = channels_sum/num_batches
+    std = (channels_squared_sum/num_batches - mean**2)**0.5
+
+    print("Mean: ", mean)
+    print("Std: ", std)
+    return mean, std
 
 def get_data_loader(datapth, annpath, ims_per_gpu, scales, cropsize, max_iter=None, mode='train', distributed=True):
     if mode == 'train':
@@ -80,6 +97,11 @@ def get_data_loader(datapth, annpath, ims_per_gpu, scales, cropsize, max_iter=No
             num_workers=4,
             pin_memory=True,
         )
+    
+    mean, std = get_mean_std(al)
+
+
+    sys.exit()
     return dl
 
 
